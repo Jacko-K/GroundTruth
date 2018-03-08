@@ -40,28 +40,28 @@ public class CycleMultiImages : MonoBehaviour
         hasInput = false;
     }
 
-    void OnGUI()
-    {
-        //int w = Screen.width, h = Screen.height;
+    //void OnGUI()
+    //{
+    //    //int w = Screen.width, h = Screen.height;
 
-        //GUIStyle style = new GUIStyle();
+    //    //GUIStyle style = new GUIStyle();
 
-        //Rect rect = new Rect(0, 0, w, h * 2 / 100);
-        //style.alignment = TextAnchor.UpperLeft;
-        //style.fontSize = h * 2 / 100;
-        //style.normal.textColor = new Color(0.0f, 0.0f, 0.5f, 1.0f);
+    //    //Rect rect = new Rect(0, 0, w, h * 2 / 100);
+    //    //style.alignment = TextAnchor.UpperLeft;
+    //    //style.fontSize = h * 2 / 100;
+    //    //style.normal.textColor = new Color(0.0f, 0.0f, 0.5f, 1.0f);
 
-        string text = "";
-        if (currentTexture < 0)
-        {
-            text = "";
-        }
-        else
-        {
-            text = "" + images_Main[currentTexture].name.Substring(0, 4);
-        }
-        yearText.text = text;
-    }
+    //    string text = "";
+    //    if (currentTexture < 0)
+    //    {
+    //        text = "";
+    //    }
+    //    else
+    //    {
+    //        text = "" + images_Main[currentTexture].name.Substring(0, 4);
+    //    }
+    //    yearText.text = text;
+    //}
 
     // Update is called once per frame
     void Update()
@@ -76,7 +76,7 @@ public class CycleMultiImages : MonoBehaviour
         }
         else if (!hasUser && !hasInput)
         {
-            BlendY(1.0f);
+            BlendX(1.0f);
             GlobalSpeed = 0.5f;
             BlendImages();
         }
@@ -115,34 +115,34 @@ public class CycleMultiImages : MonoBehaviour
 
     public void BlendImages()
     {
-        if (blendAmountY > 1.0f)
+        if (blendAmountX > 1.0f)
         {
             if (currentTexture < 0)
             {
                 currentTexture = 1;
                 ImageSwap(0, currentTexture);
-                blendAmountY = 0.0f;
+                blendAmountX = 0.0f;
             }
             else if (currentTexture < images_Main.Length - 1)
             {
                 ImageSwap(currentTexture, currentTexture + 1);
                 currentTexture++;
-                blendAmountY = 0.0f;
+                blendAmountX = 0.0f;
             }
             else
             {
                 ImageSwap(currentTexture, 0);
                 currentTexture = -1;
-                blendAmountY = 0.0f;
+                blendAmountX = 0.0f;
             }
         }
-        else if (blendAmountY < 0.0f)
+        else if (blendAmountX < 0.0f)
         {
             if (currentTexture > 1)
             {
                 currentTexture--;
                 ImageSwap(currentTexture - 1, currentTexture);
-                blendAmountY = 1.0f;
+                blendAmountX = 1.0f;
             }
         }
 

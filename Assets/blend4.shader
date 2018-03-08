@@ -63,9 +63,9 @@ Shader "Example/Blend4Textures"
 				float4 mainCol1 = tex2D(_MainTex1, i.uv_MainTex);
 				float4 texTwoCol1 = tex2D(_NextTex1, i.uv_MainTex);
 
-				float4 blend = lerp(mainCol, texTwoCol, _YPercentage);
-				float4 blend1 = lerp(mainCol1, texTwoCol1, _YPercentage);
-				float4 blend2 = lerp(blend, blend1, _XPercentage);
+				float4 blend = lerp(mainCol, texTwoCol, _XPercentage);
+				float4 blend1 = lerp(mainCol1, texTwoCol1, _XPercentage);
+				float4 blend2 = lerp(blend, blend1, _YPercentage);
 				return blend2;
             }
             ENDCG

@@ -26,6 +26,8 @@ ExportedObj/
 *.[Tt]iff
 *.jpg.meta
 *.[Tt]iff.meta
+*.wav
+*.wav.meta
 
 
 
