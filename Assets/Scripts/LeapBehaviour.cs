@@ -77,13 +77,13 @@ public class LeapBehaviour : MonoBehaviour
                     if (diff.y > 0 && frame.Hands[0].PalmPosition.y > yCutoff)
                     {
                         //Debug.Log("up: " + diff.y);
-                        ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier);
+                        ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier * 0.02f);
                         upDown = 1;
                     }
                     else if (diff.y < 0 && frame.Hands[0].PalmPosition.y < yCutoff)
                     {
                         //Debug.Log("down: " + diff.y);
-                        ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier);
+                        ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier * 0.02f);
                         upDown = 2;
                     }
                     else
