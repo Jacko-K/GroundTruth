@@ -28,7 +28,8 @@ ExportedObj/
 *.[Tt]iff.meta
 *.wav
 *.wav.meta
-
+*.mov
+*.mov.meta
 
 
 # Unity3D generated meta files
