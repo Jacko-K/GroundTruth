@@ -35,6 +35,7 @@ public class SceneChanger : MonoBehaviour
             float fadeTime = GetComponentInChildren<Fading>().BeginFade(1);
             yield return new WaitForSeconds(fadeTime);
             nextSceneNumber = SceneManager.GetActiveScene().buildIndex + 1;
+            SceneManager.LoadScene(0);
         }
     }
     
