@@ -16,14 +16,14 @@ public class Oscilloscope : MonoBehaviour
     //Multipliers
     [Range(0f, 1f)]
     public float widthMultiplier = 0.5f;
-    [Range(0.01f, 2f)]
+    [Range(0.01f, 360f)]
     public float heightMultiplier = 1f;
     public AudioSource A;
     private float[] sound;
     public LineRenderer lineRenderer;
     void Start()
     {
-        sound = new float[64];
+        
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
         lineRenderer.widthMultiplier = 0.2f;
@@ -34,11 +34,12 @@ public class Oscilloscope : MonoBehaviour
     {
         lineRenderer.positionCount = lengthOfLineRenderer;
         var t = Time.time;
-        A.GetOutputData(sound, 0);
+        sound = new float[lineRenderer.positionCount];
+        A.GetOutputData(sound, 1);
         for (int i = 0; i < lineRenderer.positionCount; i++)
         {
-            //lineRenderer.SetPosition(i, new Vector3(i * widthMultiplier, Mathf.Sin(((i * heightMultiplier) + t)), 0.0f));
-            lineRenderer.SetPosition(i, new Vector3(i * widthMultiplier, Mathf.Sin((sound[i] * heightMultiplier) + t), 0.0f));
+            lineRenderer.SetPosition(i, new Vector3(i * widthMultiplier, Mathf.Sin(((i * heightMultiplier) + t)), 0.0f));
+            lineRenderer.SetPosition(i, (new Vector3(i * widthMultiplier, sound[i], 0.0f)));
         }
     }
 }
