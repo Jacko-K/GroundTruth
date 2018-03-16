@@ -45,25 +45,6 @@ public class CycleMultiImages : MonoBehaviour
 		Init();
     }
 
-	public void LoadAll(string[] filePaths, Texture[] images)
-	{
-		images = new Texture[filePaths.Length];
-		Debug.Log(filePaths.Length);
-		foreach (string filePath in filePaths)
-		{
-			WWW load = new WWW("file:///" + filePath);
-			//yield return load;
-			if (!string.IsNullOrEmpty(load.error))
-			{
-				Debug.LogWarning(filePath + " error");
-			}
-			else
-			{
-				images[count++] = load.texture;
-			}
-		}
-	}
-
 	void Init()
     {
 		blendAmountX = 0;
