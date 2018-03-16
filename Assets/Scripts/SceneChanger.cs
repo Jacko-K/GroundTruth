@@ -10,7 +10,7 @@ public class SceneChanger : MonoBehaviour
     private int minutes = 1;
     private float interval = 1;
     public bool hasUser;
-    public float timeLimit = 5;
+    public float timeLimit = 15;
     private VideoPlayer vid;
     public int sceneCycle;
     public GameObject sceneController;
@@ -41,6 +41,10 @@ public class SceneChanger : MonoBehaviour
         {
             hasUser = sceneController.GetComponent<CycleMultiImages>().hasUser;
             if (minutes > timeLimit && !hasUser)
+            {
+                StartCoroutine(ChangeScene());
+            }
+            else if (Input.GetKeyDown("Space"))
             {
                 StartCoroutine(ChangeScene());
             }
@@ -77,8 +81,8 @@ public class SceneChanger : MonoBehaviour
     IEnumerator loadNext()
     {
         {
-            yield return new WaitForSeconds(2f);
-             AsyncOperation asyncload = SceneManager.LoadSceneAsync(sceneCycle);
+            yield return new WaitForSeconds(4f);
+            SceneManager.LoadSceneAsync(sceneCycle);            
         }
 }
 
