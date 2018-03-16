@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.IO;
 
 public class CycleMultiImages : MonoBehaviour
 {
 
     public Texture[] images_Main;
     public Texture[] images_Alt;
-	
+
+	public string falseColorDir;
+	public string trueColorDir;
+
     public int currentTexture;
     public float blendAmountX;
     public float blendAmountY;
@@ -30,17 +34,39 @@ public class CycleMultiImages : MonoBehaviour
 	private int numImages;
 
     // Use this for initialization
-    void Start()
+    public void Start()
     {
 		numImages = images_Main.Length;
-        System.Array.Sort(images_Main, (a, b) => a.name.CompareTo(b.name));
+
+		Debug.Log(images_Main.Length);
+		
+		System.Array.Sort(images_Main, (a, b) => a.name.CompareTo(b.name));
         System.Array.Sort(images_Alt, (a, b) => a.name.CompareTo(b.name));
 		Init();
     }
 
-    void Init()
+	public void LoadAll(string[] filePaths, Texture[] images)
+	{
+		images = new Texture[filePaths.Length];
+		Debug.Log(filePaths.Length);
+		foreach (string filePath in filePaths)
+		{
+			WWW load = new WWW("file:///" + filePath);
+			//yield return load;
+			if (!string.IsNullOrEmpty(load.error))
+			{
+				Debug.LogWarning(filePath + " error");
+			}
+			else
+			{
+				images[count++] = load.texture;
+			}
+		}
+	}
+
+	void Init()
     {
-        blendAmountX = 0;
+		blendAmountX = 0;
         blendAmountY = 0;
         currentTexture = 0;
         r = GetComponent<Renderer>();
