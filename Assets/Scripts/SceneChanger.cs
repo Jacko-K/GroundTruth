@@ -21,12 +21,12 @@ public class SceneChanger : MonoBehaviour
 	{
 		TimeLapse();
 		vid = this.GetComponent<VideoPlayer>();
-		if (SceneManager.GetActiveScene().buildIndex == 0 || SceneManager.GetActiveScene().buildIndex == 2 || SceneManager.GetActiveScene().buildIndex == 4)
+
+        if (SceneManager.GetActiveScene().buildIndex == 0 || SceneManager.GetActiveScene().buildIndex == 2 || SceneManager.GetActiveScene().buildIndex == 4)
 		{
 			sceneCycle = SceneManager.GetActiveScene().buildIndex + 1;
 			activeScene = false;
 			vid.Play();
-			StartCoroutine(loadNext());
 		}
 		else
 		{
@@ -40,11 +40,11 @@ public class SceneChanger : MonoBehaviour
 		if (activeScene)
 		{
 			hasUser = sceneController.GetComponent<CycleMultiImages>().hasUser;
-			if (minutes > timeLimit && !hasUser)
-			{
-				StartCoroutine(ChangeScene());
-			}
-			else if (Input.GetKeyDown("Space"))
+            if (minutes > timeLimit && !hasUser)
+            {
+                StartCoroutine(ChangeScene());
+            }
+            else if (Input.GetKeyDown(KeyCode.Space))
 			{
 				StartCoroutine(ChangeScene());
 			}
@@ -55,11 +55,15 @@ public class SceneChanger : MonoBehaviour
 		}
 		else
 		{
-			if (!vid.isPlaying)
+            if (!vid.isPlaying)
 			{
 				StartCoroutine(ChangeScene());
 			}
-		}
+            //else
+            //{
+            //    StartCoroutine(loadNext());
+            //}
+        }
 	}
 	//fade to black over time and set the next scene to be viewed
 	//unless it's at the last scene, then reset to zero
@@ -80,10 +84,9 @@ public class SceneChanger : MonoBehaviour
 
 	IEnumerator loadNext()
 	{
-		{
-			yield return new WaitForSeconds(4f);
-			SceneManager.LoadSceneAsync(sceneCycle);
-		}
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneCycle);
+
+        yield return new WaitForSeconds(10f);
 	}
 
 	public void TimeLapse()
