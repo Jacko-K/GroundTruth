@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Video;
 
 public class SceneChanger : MonoBehaviour
@@ -11,20 +12,26 @@ public class SceneChanger : MonoBehaviour
 	private float interval = 1;
 	public bool hasUser;
 	public float timeLimit = 15;
+    public float sessionTimoutLimit;
 	private VideoPlayer vid;
 	public int sceneCycle;
 	public GameObject sceneController;
 	private bool activeScene;
 	private bool sessionOpen;
+    public bool endScene;
 	private Logger logger;
+    public AudioMixerSnapshot noSound;
+    public AudioMixerSnapshot soundUp;
+
 
 	// Use this for initialization
 	void Start()
-	{
+	{        
 		logger = GameObject.Find("Logger").GetComponent<Logger>();
 		sessionOpen = false;
 		TimeLapse();
 		vid = this.GetComponent<VideoPlayer>();
+        endScene = false;
 
         if (SceneManager.GetActiveScene().buildIndex == 0 || SceneManager.GetActiveScene().buildIndex == 2 || SceneManager.GetActiveScene().buildIndex == 4)
 		{
@@ -44,31 +51,44 @@ public class SceneChanger : MonoBehaviour
 		if (activeScene)
 		{
 			hasUser = sceneController.GetComponent<CycleMultiImages>().hasUser;
-            if (minutes > timeLimit && !hasUser)
+            if (minutes > sessionTimoutLimit && !hasUser)
             {
-				if (sessionOpen)
-				{
-					sessionOpen = false;
-					logger.AppendLog("Session closed: " + System.DateTime.Now);
-				}
-				StartCoroutine(ChangeScene());
+                if (sessionOpen)
+                {
+                    sessionOpen = false;
+                    logger.AppendLog("Session closed: " + System.DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.Space))
+            else if (hasUser)
+            {
+                minutes = 0;
+                if (!sessionOpen)
+                {
+                    sessionOpen = true;
+                    logger.AppendLog("Session opened: " + System.DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
+                }
+            }
+            if (endScene)
+            {
+                noSound.TransitionTo(2f);
+                StartCoroutine(ChangeScene());
+            }
+            if (!endScene && minutes > timeLimit && !hasUser)
+            {
+                endScene = true;
+            }
+            else if (!endScene && Input.GetKeyDown(KeyCode.Space))
 			{
-				StartCoroutine(ChangeScene());
-			}
-			else if (hasUser)
-			{
-				minutes = 0;
-				if (!sessionOpen)
-				{
-					sessionOpen = true;
-					logger.AppendLog("Session opened: " + System.DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
-				}
-			}
+                endScene = true;               
+            }
+            else if (!endScene && !hasUser)
+            {
+                soundUp.TransitionTo(2f);
+            } 
 		}
 		else
 		{
+            
             if (!vid.isPlaying)
 			{
 				//StartCoroutine(loadNext());
@@ -83,9 +103,9 @@ public class SceneChanger : MonoBehaviour
 	//fade to black over time and set the next scene to be viewed
 	//unless it's at the last scene, then reset to zero
 	IEnumerator ChangeScene()
-	{
-		float fadeTime = GetComponentInChildren<Fading>().BeginFade(1);
-		yield return new WaitForSeconds(fadeTime);
+	{        
+        float fadeTime = GetComponentInChildren<Fading>().BeginFade(1);        
+        yield return new WaitForSeconds(fadeTime);
 		sceneCycle = SceneManager.GetActiveScene().buildIndex + 1;
 		if (sceneCycle >= SceneManager.sceneCountInBuildSettings)
 		{
@@ -122,6 +142,6 @@ public class SceneChanger : MonoBehaviour
 	{
 		minutes = minutes + 1;
 		Invoke("TimeLapse", interval);
-		Debug.Log(minutes);
+		//Debug.Log(minutes);
 	}
 }

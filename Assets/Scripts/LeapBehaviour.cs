@@ -21,97 +21,103 @@ public class LeapBehaviour : MonoBehaviour
     private Vector2 startPos = new Vector2(0, 0.3f);
     private int leftRight;
     private int upDown;
+    public bool sceneEnding;
+    public GameObject sceneStatus;
 
     void Start()
     {
         provider = FindObjectOfType<LeapProvider>() as LeapProvider;
         ci = GetComponent<CycleMultiImages>();
+        sceneEnding = false;
     }
 
     void Update()
     {
         
         Frame frame = provider.CurrentFrame;
+        sceneEnding = sceneStatus.GetComponent<SceneChanger>().endScene;
 
-        if (frame.Hands.Count > 0)
+        if (frame.Hands.Count > 0 && !sceneEnding)
         {
             ci.hasUser = true;
             //if (startPos != Vector2.zero)
             //{
                 Vector2 diff = new Vector2(frame.Hands[0].PalmPosition.x - startPos.x, frame.Hands[0].PalmPosition.y - startPos.y);
 
-                if (Mathf.Abs(diff.x) > xDeadzone)
+            if (Mathf.Abs(diff.x) > xDeadzone)
+            {
+                if (diff.x < 0 && frame.Hands[0].PalmPosition.x < -xCutoff)
                 {
-                    if (diff.x < 0 && frame.Hands[0].PalmPosition.x < xCutoff)
+                    //Debug.Log("left: " + diff.x);
+                    ci.BlendX((frame.Hands[0].PalmPosition.x + xCutoff) * LeapMultiplier);
+                    leftRight = 1;
+                    foreach (AudioSource a in GetComponents<AudioSource>())
                     {
-                        //Debug.Log("left: " + diff.x);
-                        ci.BlendX((frame.Hands[0].PalmPosition.x - xCutoff) * LeapMultiplier);
-                        leftRight = 1;
-                        foreach(AudioSource a in GetComponents<AudioSource>())
-                        {
-                           a.pitch = Mathf.Lerp(a.pitch, -1f, 0.05f);
-                        }
-                    }
-                    else if (diff.x > 0 && frame.Hands[0].PalmPosition.x > xCutoff)
-                    {
-                        //Debug.Log("right: " + diff.x);
-                        ci.BlendX((frame.Hands[0].PalmPosition.x - xCutoff) * LeapMultiplier);
-                        leftRight = 2;
-                        foreach (AudioSource a in GetComponents<AudioSource>())
-                        {
-                           a.pitch = Mathf.Lerp(a.pitch, 1f, 0.05f);
-                        }
-                    }
-                    else
-                    {
-                        leftRight = 0;
-                        foreach (AudioSource a in GetComponents<AudioSource>())
-                        {
-                            a.pitch = Mathf.Lerp(a.pitch, 1f, 0.05f);
-                        }
+                        a.pitch = Mathf.Lerp(a.pitch, -1f, 0.05f);
                     }
                 }
-
-                if (Mathf.Abs(diff.y) > yDeadzone)
+                else if (diff.x > 0 && frame.Hands[0].PalmPosition.x > xCutoff)
                 {
-                    if (diff.y > 0 && frame.Hands[0].PalmPosition.y > yCutoff)
+                    //Debug.Log("right: " + diff.x);
+                    ci.BlendX((frame.Hands[0].PalmPosition.x - xCutoff) * LeapMultiplier);
+                    leftRight = 2;
+                    foreach (AudioSource a in GetComponents<AudioSource>())
                     {
-                        //Debug.Log("up: " + diff.y);
-                        ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier * 0.02f);
-                        upDown = 1;
-                    }
-                    else if (diff.y < 0 && frame.Hands[0].PalmPosition.y < yCutoff)
-                    {
-                        //Debug.Log("down: " + diff.y);
-                        ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier * 0.02f);
-                        upDown = 2;
-                    }
-                    else
-                    {
-                        upDown = 0;
+                        a.pitch = Mathf.Lerp(a.pitch, 1f, 0.05f);
                     }
                 }
+                else
+                {
+                    leftRight = 0;
+                    foreach (AudioSource a in GetComponents<AudioSource>())
+                    {
+                        a.pitch = Mathf.Lerp(a.pitch, 1f, 0.05f);
+                    }
 
-                //if (frame.Hands[0].PalmPosition.y > yCutoff)
-                //{
-                //    ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier);
-                //    falseColor.TransitionTo(2f);
-                //}
-                //else 
-                //{
-                //    ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier);
-                //    trueColor.TransitionTo(2f);
-                //}
-                //if (frame.Hands[0].PalmPosition.x > xCutoff)
-                //{
-                //    ci.BlendX((frame.Hands[0].PalmPosition.x - xCutoff) * LeapMultiplier);
-                //    fastTime.TransitionTo(2f);
-                //}
-                //if (frame.Hands[0].PalmPosition.x < xCutoff)
-                //{
-                //    ci.BlendX((frame.Hands[0].PalmPosition.x - xCutoff) * LeapMultiplier);
-                //    slowTime.TransitionTo(2f);
-                //}
+                }
+            }
+                
+            if (Mathf.Abs(diff.y) > yDeadzone)
+            {
+                if (diff.y > 0 && frame.Hands[0].PalmPosition.y > yCutoff)
+                {
+                    //Debug.Log("up: " + diff.y);
+                    ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier * 0.04f);
+                    upDown = 1;
+                }
+                else if (diff.y < 0 && frame.Hands[0].PalmPosition.y < yCutoff)
+                {
+                    //Debug.Log("down: " + diff.y);
+                    ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier * 0.04f);
+                    upDown = 2;
+                }
+                else
+                {
+                    upDown = 0;
+                }
+
+            }
+                
+            //if (frame.Hands[0].PalmPosition.y > yCutoff)
+            //{
+            //    ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier);
+            //    falseColor.TransitionTo(2f);
+            //}
+            //else 
+            //{
+            //    ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier);
+            //    trueColor.TransitionTo(2f);
+            //}
+            //if (frame.Hands[0].PalmPosition.x > xCutoff)
+            //{
+            //    ci.BlendX((frame.Hands[0].PalmPosition.x - xCutoff) * LeapMultiplier);
+            //    fastTime.TransitionTo(2f);
+            //}
+            //if (frame.Hands[0].PalmPosition.x < xCutoff)
+            //{
+            //    ci.BlendX((frame.Hands[0].PalmPosition.x - xCutoff) * LeapMultiplier);
+            //    slowTime.TransitionTo(2f);
+            //}
             //}
             //else
             //{
@@ -123,8 +129,8 @@ public class LeapBehaviour : MonoBehaviour
         {
             //Debug.Log("RESET: " + startPos);
             //startPos = Vector2.zero;
+            //normal.TransitionTo(2f);
             ci.hasUser = false;
-            normal.TransitionTo(2f);
             leftRight = 0;
             upDown = 0;
             foreach (AudioSource a in GetComponents<AudioSource>())
@@ -202,6 +208,10 @@ public class LeapBehaviour : MonoBehaviour
             weights[2] = 0f;
             weights[3] = 0.5f;
             a.TransitionToSnapshots(soundSnapshots, weights, mixerSpeed);
+        }
+        else if (!sceneEnding && blendX == 0 && blendY == 0)
+        {
+            normal.TransitionTo(2f);
         }
     }
 }

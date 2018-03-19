@@ -15,7 +15,7 @@ public class CycleMultiImages : MonoBehaviour
     public int currentTexture;
     public float blendAmountX;
     public float blendAmountY;
-    public float GlobalSpeed = 1.0f;
+    private float GlobalSpeed = 1.0f;
 
     private Renderer r;
     private bool blending;
@@ -117,7 +117,7 @@ public class CycleMultiImages : MonoBehaviour
         else if (!hasUser && !hasInput)
         {
             BlendX(1.0f);
-            GlobalSpeed = 0.5f;
+            GlobalSpeed = 1f;
             BlendImages();
         }
 

@@ -25,17 +25,22 @@ public class Logger : MonoBehaviour
 	void Start()
 	{
 		writer = new StreamWriter(Application.dataPath + "/" + filename, true);
+        AppendLog("");
+        AppendLog("!!! Application started !!!");
 
 	}
 
 	private void OnDisable()
 	{
-		writer.Close();
+		if (writer != null)
+            writer.Close();
 	}
 
 	public void AppendLog(string line)
 	{
-		writer.WriteLine(line);		
+		writer.WriteLine(line);
+        writer.Flush();
+        //Debug.Log(line);
 	}
 
 }
