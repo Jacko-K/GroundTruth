@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class CycleMultiImages : MonoBehaviour
 {
@@ -9,8 +10,7 @@ public class CycleMultiImages : MonoBehaviour
     public Texture[] images_Main;
     public Texture[] images_Alt;
 
-	public string falseColorDir;
-	public string trueColorDir;
+	
 
     public int currentTexture;
     public float blendAmountX;
@@ -36,6 +36,24 @@ public class CycleMultiImages : MonoBehaviour
     // Use this for initialization
     public void Start()
     {
+		/*int buildIndex = SceneManager.GetActiveScene().buildIndex;
+
+		switch (buildIndex) {
+			case 1:
+				images_Main = GameObject.Find("ImageManager").GetComponent<ImageLoader>().bris_images_main;
+				images_Alt = GameObject.Find("ImageManager").GetComponent<ImageLoader>().bris_images_alt;
+				break;
+			case 3:
+				images_Main = GameObject.Find("ImageManager").GetComponent<ImageLoader>().birds_images_main;
+				images_Alt = GameObject.Find("ImageManager").GetComponent<ImageLoader>().birds_images_alt;
+				break;
+			case 5:
+				images_Main = GameObject.Find("ImageManager").GetComponent<ImageLoader>().cape_images_main;
+				images_Alt = GameObject.Find("ImageManager").GetComponent<ImageLoader>().cape_images_alt;
+				break;
+
+		}*/
+		
 		numImages = images_Main.Length;
 
 		Debug.Log(images_Main.Length);

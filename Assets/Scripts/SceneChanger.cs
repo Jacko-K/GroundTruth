@@ -15,10 +15,14 @@ public class SceneChanger : MonoBehaviour
 	public int sceneCycle;
 	public GameObject sceneController;
 	private bool activeScene;
+	private bool sessionOpen;
+	private Logger logger;
 
 	// Use this for initialization
 	void Start()
 	{
+		logger = GameObject.Find("Logger").GetComponent<Logger>();
+		sessionOpen = false;
 		TimeLapse();
 		vid = this.GetComponent<VideoPlayer>();
 
@@ -42,7 +46,12 @@ public class SceneChanger : MonoBehaviour
 			hasUser = sceneController.GetComponent<CycleMultiImages>().hasUser;
             if (minutes > timeLimit && !hasUser)
             {
-                StartCoroutine(ChangeScene());
+				if (sessionOpen)
+				{
+					sessionOpen = false;
+					logger.AppendLog("Session closed: " + System.DateTime.Now);
+				}
+				StartCoroutine(ChangeScene());
             }
             else if (Input.GetKeyDown(KeyCode.Space))
 			{
@@ -51,17 +60,23 @@ public class SceneChanger : MonoBehaviour
 			else if (hasUser)
 			{
 				minutes = 0;
+				if (!sessionOpen)
+				{
+					sessionOpen = true;
+					logger.AppendLog("Session opened: " + System.DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
+				}
 			}
 		}
 		else
 		{
             if (!vid.isPlaying)
 			{
+				//StartCoroutine(loadNext());
 				StartCoroutine(ChangeScene());
 			}
             //else
             //{
-            //    StartCoroutine(loadNext());
+                //StartCoroutine(loadNext());
             //}
         }
 	}
@@ -84,11 +99,25 @@ public class SceneChanger : MonoBehaviour
 
 	IEnumerator loadNext()
 	{
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneCycle);
+		activeScene = true;
+		Application.backgroundLoadingPriority = ThreadPriority.BelowNormal; 
+		AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneCycle);
+		asyncLoad.allowSceneActivation = false;
+		while (!asyncLoad.isDone)
+		{
+			float fadeTime = GetComponentInChildren<Fading>().BeginFade(1);
+			yield return new WaitForSeconds(fadeTime);
+			//Output the current progress
+			Debug.Log("Loading progress: " + (asyncLoad.progress * 100) + "%");
 
-        yield return new WaitForSeconds(10f);
+			// Check if the load has finished
+			if (asyncLoad.progress >= 0.9f)
+			{
+				asyncLoad.allowSceneActivation = true;
+			}
+		}
 	}
-
+	
 	public void TimeLapse()
 	{
 		minutes = minutes + 1;
