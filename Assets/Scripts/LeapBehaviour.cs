@@ -88,7 +88,7 @@ public class LeapBehaviour : MonoBehaviour
                 else if (diff.y < 0 && frame.Hands[0].PalmPosition.y < yCutoff)
                 {
                     //Debug.Log("down: " + diff.y);
-                    ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier * 0.04f);
+                    ci.BlendY((frame.Hands[0].PalmPosition.y - yCutoff) * LeapMultiplier * 0.5f);
                     upDown = 2;
                 }
                 else
@@ -151,6 +151,7 @@ public class LeapBehaviour : MonoBehaviour
             weights[1] = 0f;
             weights[2] = 0f;
             weights[3] = 0f;
+            weights[4] = 0f;
             a.TransitionToSnapshots(soundSnapshots, weights, mixerSpeed);
         }
         else if(blendX == 0 && blendY == 2)
@@ -159,6 +160,7 @@ public class LeapBehaviour : MonoBehaviour
             weights[1] = 1f;
             weights[2] = 0f;
             weights[3] = 0f;
+            weights[4] = 0f;
             a.TransitionToSnapshots(soundSnapshots, weights, mixerSpeed);
         }
         else if(blendX == 1 && blendY == 0)
@@ -167,6 +169,7 @@ public class LeapBehaviour : MonoBehaviour
             weights[1] = 0f;
             weights[2] = 1f;
             weights[3] = 0f;
+            weights[4] = 0f;
             a.TransitionToSnapshots(soundSnapshots, weights, mixerSpeed);
         }
         else if(blendX == 2 && blendY == 0)
@@ -175,6 +178,7 @@ public class LeapBehaviour : MonoBehaviour
             weights[1] = 0f;
             weights[2] = 0f;
             weights[3] = 1f;
+            weights[4] = 0f;
             a.TransitionToSnapshots(soundSnapshots, weights, mixerSpeed);
         }
         else if(blendX == 1 && blendY == 1)
@@ -183,6 +187,7 @@ public class LeapBehaviour : MonoBehaviour
             weights[1] = 0f;
             weights[2] = 0.5f;
             weights[3] = 0f;
+            weights[4] = 0f;
             a.TransitionToSnapshots(soundSnapshots, weights, mixerSpeed);
         }
         else if(blendX == 2 && blendY == 1)
@@ -191,6 +196,7 @@ public class LeapBehaviour : MonoBehaviour
             weights[1] = 0f;
             weights[2] = 0f;
             weights[3] = 0.5f;
+            weights[4] = 0f;
             a.TransitionToSnapshots(soundSnapshots, weights, mixerSpeed);
         }
         else if(blendX == 1 && blendY == 2)
@@ -199,6 +205,7 @@ public class LeapBehaviour : MonoBehaviour
             weights[1] = 0.5f;
             weights[2] = 0.5f;
             weights[3] = 0f;
+            weights[4] = 0f;
             a.TransitionToSnapshots(soundSnapshots, weights, mixerSpeed);
         }
         else if(blendX == 2 && blendY == 2)
@@ -207,11 +214,18 @@ public class LeapBehaviour : MonoBehaviour
             weights[1] = 0.5f;
             weights[2] = 0f;
             weights[3] = 0.5f;
+            weights[4] = 0f;
             a.TransitionToSnapshots(soundSnapshots, weights, mixerSpeed);
         }
         else if (!sceneEnding && blendX == 0 && blendY == 0)
         {
-            normal.TransitionTo(2f);
+            weights[0] = 0;
+            weights[1] = 0;
+            weights[2] = 0;
+            weights[3] = 0;
+            weights[4] = 1;
+            a.TransitionToSnapshots(soundSnapshots, weights, mixerSpeed);
+            //Debug.Log("Deadzoning");
         }
     }
 }

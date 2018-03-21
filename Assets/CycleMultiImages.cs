@@ -97,7 +97,7 @@ public class CycleMultiImages : MonoBehaviour
 		else
 		{
 			float newBlendY = ((blendAmountY - 0.5f) / (1.0f - 0.5f));
-			Debug.Log("newBlendY: " + newBlendY);
+			//Debug.Log("newBlendY: " + newBlendY);
 			glowColor.color = Color.Lerp(Color.grey, falseColorGlow, blendAmountY);
 		}
 		scrollbar.value = (float)(currentTexture - 1) / (float)numImages;
