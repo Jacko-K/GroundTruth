@@ -19,7 +19,7 @@ public class Logger : MonoBehaviour
 		else
 		{
 			DestroyImmediate(gameObject);
-		}
+        }
 	}
 
 	void Start()

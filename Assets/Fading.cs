@@ -11,6 +11,7 @@ public class Fading : MonoBehaviour {
     private int drawdepth = -1000;
     private float fadeAlpha = 1.0f;
     private int fadeDir = -1;
+    public GUIStyle loading;
 
     void OnGUI()
     {
@@ -20,13 +21,14 @@ public class Fading : MonoBehaviour {
         GUI.color = new Color(GUI.color.r, GUI.color.g, GUI.color.b, fadeAlpha);
         GUI.depth = drawdepth;
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), fadeOutTexture);
+        GUI.TextField(new Rect(Screen.width / 2, Screen.height / 2, 0, 0), "LOADING", loading);
     }
 
     public float BeginFade(int direction)
     {
         fadeDir = direction;
-        return(fadeSpeed);
+        return (fadeSpeed);
     }
-		
+
 }
 

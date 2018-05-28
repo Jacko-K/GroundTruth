@@ -16,7 +16,7 @@ public class SceneChanger : MonoBehaviour
 	private VideoPlayer vid;
 	public int sceneCycle;
 	public GameObject sceneController;
-	private bool activeScene;
+	public bool activeScene;
 	private bool sessionOpen;
     public bool endScene;
 	private Logger logger;
@@ -24,26 +24,27 @@ public class SceneChanger : MonoBehaviour
     public AudioMixerSnapshot soundUp;
 
 
-	// Use this for initialization
-	void Start()
+    // Use this for initialization
+    void Start()
 	{        
 		logger = GameObject.Find("Logger").GetComponent<Logger>();
 		sessionOpen = false;
 		TimeLapse();
 		vid = this.GetComponent<VideoPlayer>();
         endScene = false;
+        
 
         if (SceneManager.GetActiveScene().buildIndex == 0 || SceneManager.GetActiveScene().buildIndex == 2 || SceneManager.GetActiveScene().buildIndex == 4)
-		{
-			sceneCycle = SceneManager.GetActiveScene().buildIndex + 1;
-			activeScene = false;
-			vid.Play();
-		}
-		else
-		{
-			activeScene = true;
-		}
-	}
+        {
+            sceneCycle = SceneManager.GetActiveScene().buildIndex + 1;
+            activeScene = false;
+            vid.Play();
+        }
+        else
+        {
+            activeScene = true;
+        }
+    }
 
 	// Update is called once per frame
 	void Update()
@@ -77,7 +78,7 @@ public class SceneChanger : MonoBehaviour
             {
                 endScene = true;
             }
-            else if (!endScene && Input.GetKeyDown(KeyCode.Space))
+            else if (!endScene && Input.GetKey(KeyCode.Space))
 			{
                 endScene = true;               
             }
@@ -87,24 +88,19 @@ public class SceneChanger : MonoBehaviour
             } 
 		}
 		else
-		{
-            
+		{            
             if (!vid.isPlaying)
 			{
-				//StartCoroutine(loadNext());
 				StartCoroutine(ChangeScene());
 			}
-            //else
-            //{
-                //StartCoroutine(loadNext());
-            //}
         }
 	}
-	//fade to black over time and set the next scene to be viewed
-	//unless it's at the last scene, then reset to zero
-	IEnumerator ChangeScene()
-	{        
-        float fadeTime = GetComponentInChildren<Fading>().BeginFade(1);        
+
+    //fade to black over time and set the next scene to be viewed
+    //unless it's at the last scene, then reset to zero
+    IEnumerator ChangeScene()
+	{
+        float fadeTime = GetComponentInChildren<Fading>().BeginFade(1);
         yield return new WaitForSeconds(fadeTime);
 		sceneCycle = SceneManager.GetActiveScene().buildIndex + 1;
 		if (sceneCycle >= SceneManager.sceneCountInBuildSettings)
@@ -117,26 +113,28 @@ public class SceneChanger : MonoBehaviour
 		}
 	}
 
-	IEnumerator loadNext()
-	{
-		activeScene = true;
-		Application.backgroundLoadingPriority = ThreadPriority.BelowNormal; 
-		AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneCycle);
-		asyncLoad.allowSceneActivation = false;
-		while (!asyncLoad.isDone)
-		{
-			float fadeTime = GetComponentInChildren<Fading>().BeginFade(1);
-			yield return new WaitForSeconds(fadeTime);
-			//Output the current progress
-			Debug.Log("Loading progress: " + (asyncLoad.progress * 100) + "%");
+    //Some simultaneous loading stuff that never worked, and isn't being used
 
-			// Check if the load has finished
-			if (asyncLoad.progress >= 0.9f)
-			{
-				asyncLoad.allowSceneActivation = true;
-			}
-		}
-	}
+	//IEnumerator loadNext()
+	//{
+	//	activeScene = true;
+	//	Application.backgroundLoadingPriority = ThreadPriority.BelowNormal; 
+	//	AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneCycle);
+	//	asyncLoad.allowSceneActivation = false;
+	//	while (!asyncLoad.isDone)
+	//	{
+	//		float fadeTime = GetComponentInChildren<Fading>().BeginFade(1);
+	//		yield return new WaitForSeconds(fadeTime);
+	//		//Output the current progress
+	//		Debug.Log("Loading progress: " + (asyncLoad.progress * 100) + "%");
+
+	//		// Check if the load has finished
+	//		if (asyncLoad.progress >= 0.9f)
+	//		{
+	//			asyncLoad.allowSceneActivation = true;
+	//		}
+	//	}
+	//}
 	
 	public void TimeLapse()
 	{
